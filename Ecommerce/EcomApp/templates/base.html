@@ -1,0 +1,347 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MACESSENTIALSTORE{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f1f3f6;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        /* Navigation Section */
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-item {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: #f1f3f6;
+            color: #2874f0;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 64px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* Footer */
+        .footer {
+            background: #172337;
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-section h3 {
+            color: #878787;
+            font-size: 12px;
+            font-weight: 400;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #2874f0;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #454d5e;
+            margin-top: 30px;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #878787;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 15px;
+                height: 56px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .nav-section {
+                gap: 20px;
+            }
+
+            .nav-item {
+                font-size: 13px;
+                padding: 6px 8px;
+            }
+
+            .main-content {
+                margin-top: 56px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-section {
+                gap: 12px;
+            }
+
+            .nav-item {
+                font-size: 12px;
+                padding: 4px 6px;
+            }
+
+            .logo {
+                font-size: 16px;
+            }
+
+            .logo-image {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="header-container">
+            <!-- Logo Section -->
+            <div class="logo-section" style="font-size: 12px;">
+                <img src="{% static 'images/title_logo.jpeg'%}" alt="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <a href="/" class="logo">MACESSENTIALSTORE</a>
+            </div>
+
+            <!-- Navigation Section -->
+            <div class="nav-section">
+                <a href="/" class="nav-item">
+                    <span>Home</span>
+                </a>
+                
+                <a href="/about" class="nav-item">
+                    <span>About</span>
+                </a>
+                
+                <a href="/products" class="nav-item">
+                    <span>Products</span>
+                </a>
+                
+                <a href="/support" class="nav-item">
+                    <span>Support</span>
+                </a>
+                {% if user.is_authenticated %}
+                <a href="/profile" class="nav-item">
+                    <span>{{ user.get_full_name|default:user.email }}</span>
+                </a>
+                <a href="/logout" class="nav-item">
+                    <span>Logout</span>
+                </a>
+                {% else %}
+                <a href="/login" class="nav-item">
+                    <span>Login</span>
+                </a>
+                {% endif %}
+                
+                <a href="/cart" class="nav-item">
+                    <span>My Cart</span>
+                    <div class="cart-badge">0</div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Messages -->
+        {% if messages %}
+        <div style="position: fixed; top: 80px; right: 20px; z-index: 1001; max-width: 400px;">
+            {% for message in messages %}
+            <div style="background: {% if message.tags == 'error' %}#ff4444{% elif message.tags == 'success' %}#00C851{% else %}#33b5e5{% endif %}; color: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: slideInRight 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>{{ message }}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">×</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer style="background: #181f2a; color: #f8f9fa; padding: 3.5rem 0 2rem 0; margin-top: 4rem; font-family: inherit;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2.5rem;">
+          <!-- About Section -->
+          <div style="flex: 1 1 260px; min-width: 220px;">
+            <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1.2rem;">
+              <span style="font-size:1.5rem;font-weight:700;letter-spacing:1px;">MACESSENTIALSTORE</span>
+            </div>
+            <p style="font-size:1.05rem;line-height:1.7;margin-bottom:1.2rem;">Premium Apple products, modern UI and a vibrant shopping experience. Built for learning and inspirations.</p>
+            
+          </div>
+          <!-- Quick Links -->
+          <div style="flex: 1 1 180px; min-width: 160px;">
+            <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:1.1rem;">Quick Links</h3>
+            <ul style="list-style:none;padding:0;">
+              <li style="margin-bottom:0.7rem;"><a href="#products" style="color:#bfc8e2;text-decoration:none;font-size:1rem;">Products</a></li>
+              <li style="margin-bottom:0.7rem;"><a href="#services" style="color:#bfc8e2;text-decoration:none;font-size:1rem;">Services</a></li>
+              <li style="margin-bottom:0.7rem;"><a href="https://support.apple.com/en-in" target="_blank" rel="noopener" style="color:#bfc8e2;text-decoration:none;font-size:1rem;">Support</a></li>
+            </ul>
+          </div>
+          <div style="flex: 1 1 220px; min-width: 180px;">
+            <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:1.1rem;">Popular Products</h3>
+            <ul style="list-style:none;padding:0;">
+              <li style="margin-bottom:0.7rem;color:#bfc8e2;font-size:1rem;">iPhone 16 Pro</li>
+              <li style="margin-bottom:0.7rem;color:#bfc8e2;font-size:1rem;">MacBook Pro 14"</li>
+              <li style="margin-bottom:0.7rem;color:#bfc8e2;font-size:1rem;">iPad Air 11"</li>
+            </ul>
+          </div>
+          <div style="flex: 1 1 260px; min-width: 200px;">
+            <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:1.1rem;">Contact Info</h3>
+            <ul style="list-style:none;padding:0;font-size:1rem;color:#bfc8e2;">
+              <li style="margin-bottom:0.7rem;"><a href="https://support.apple.com/en-in/contact" style="color:#bfc8e2;text-decoration:none;">Contact</a></li>
+              <li style="margin-bottom:0.7rem;">✉️ macessentialstore@gmail.com</li>
+              <li style="margin-bottom:0.7rem;">🌐 <a href="https://macessentialstore.com" style="color:#bfc8e2;text-decoration:none;">macessentialstore.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #2c3442;margin:2.5rem 0 1.5rem 0;">
+        <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+          <div style="font-size:1rem;color:#bfc8e2;">&copy; 2025 MACESSENTIALSTORE. All Rights Reserved.</div>
+          <div style="display:flex;align-items:center;gap:1.2rem;">
+                <img src="{% static 'images/title_logo.jpeg' %}" alt="Footer Logo" style="width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 2px 12px rgba(102,126,234,0.15);">
+          </div>
+        </div>
+      </footer>
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Cart badge update
+        function updateCartBadge(count) {
+            const badge = document.querySelector('.cart-badge');
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        // Initialize cart badge
+        updateCartBadge(0);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

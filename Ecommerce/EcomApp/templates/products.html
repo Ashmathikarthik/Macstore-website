@@ -1,0 +1,748 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Products - MACESSENTIALSTORE{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #7691e8 0%, #377cb7 100%);
+        color: white;
+        padding: 4rem 2rem;
+        margin-top: 64px;
+        position: relative;
+        overflow: hidden;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        font-weight: 500;
+    }
+
+    .hero-image {
+        position: relative;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .floating-products {
+        position: relative;
+        width: 300px;
+        height: 300px;
+    }
+
+    .product-float {
+        position: absolute;
+        font-size: 4rem;
+        animation: float 6s ease-in-out infinite;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    .iphone-float {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .macbook-float {
+        top: 60%;
+        right: 10%;
+        animation-delay: 1.5s;
+    }
+
+    .airpods-float {
+        bottom: 20%;
+        left: 30%;
+        animation-delay: 3s;
+    }
+
+    .watch-float {
+        top: 10%;
+        right: 30%;
+        animation-delay: 4.5s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(5deg); }
+        66% { transform: translateY(-10px) rotate(-5deg); }
+    }
+
+    /* Products Container Styles */
+    .products-container { max-width: 1400px; margin: 60px auto; padding: 2rem; }
+    .products-title { text-align: center; font-size: 2.5rem; font-weight: 700; color: #222; margin-bottom: 2rem; }
+    .category-section { margin-bottom: 4rem; }
+    .category-title { font-size: 2rem; font-weight: 600; color: #3498db; margin-bottom: 1.5rem; text-align: center; border-bottom: 2px solid #e1e5e9; padding-bottom: 0.5rem; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+    .product-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(52,152,219,0.08); padding: 1.5rem; display: flex; flex-direction: column; transition: box-shadow 0.3s; position: relative; }
+    .product-card:hover { box-shadow: 0 8px 32px rgba(52,152,219,0.18); transform: translateY(-4px); }
+    .product-image { width: 200px; height: 200px; object-fit: contain; border-radius: 12px; margin: 0 auto 1rem; }
+    .product-title { font-size: 1.3rem; font-weight: 600; color: #3498db; margin-bottom: 0.5rem; text-align: center; }
+    .product-specs { color: #555; font-size: 0.9rem; margin-bottom: 1rem; text-align: center; line-height: 1.4; }
+    .price-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0.5rem; background: #f8f9fa; border-radius: 8px; }
+    .original-price { color: #999; text-decoration: line-through; font-size: 0.9rem; }
+    .store-price { color: #e74c3c; font-weight: 700; font-size: 1.1rem; }
+    .coin-icon { color: #f1c40f; margin-right: 0.3em; }
+    .like-btn { position: absolute; top: 1rem; right: 1rem; background: #fff; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(52,152,219,0.10); cursor: pointer; transition: background 0.2s; }
+    .like-btn:hover { background: #ffe6e6; }
+    .like-btn.liked { color: #e74c3c; }
+    .product-actions { display: flex; gap: 0.7rem; margin-top: auto; }
+    .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; flex: 1; }
+    .btn-cart { background: #3498db; color: #fff; }
+    .btn-cart:hover { background: #217dbb; }
+    .btn-buy { background: #f1c40f; color: #222; }
+    .btn-buy:hover { background: #f39c12; color: #fff; }
+    .discount-badge { position: absolute; top: 1rem; left: 1rem; background: #e74c3c; color: #fff; padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+    
+    /* Category Filters */
+    .category-filters { display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.75rem 1.5rem; border: 2px solid #3498db; background: white; color: #3498db; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
+    .filter-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,152,219,0.2); }
+    .filter-btn.active { background: #3498db; color: white; }
+    .filter-btn.iphone { border-color: #3498db; color: #3498db; }
+    .filter-btn.iphone.active { background: #3498db; color: white; }
+    .filter-btn.mac { border-color: #e74c3c; color: #e74c3c; }
+    .filter-btn.mac.active { background: #e74c3c; color: white; }
+    .filter-btn.airpods { border-color: #9b59b6; color: #9b59b6; }
+    .filter-btn.airpods.active { background: #9b59b6; color: white; }
+    .filter-btn.watch { border-color: #f39c12; color: #f39c12; }
+    .filter-btn.watch.active { background: #f39c12; color: white; }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1rem;
+            min-height: 400px;
+        }
+
+        .hero-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .hero-stats {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+        }
+
+        .hero-image {
+            height: 250px;
+        }
+
+        .floating-products {
+            width: 200px;
+            height: 200px;
+        }
+
+        .product-float {
+            font-size: 2.5rem;
+        }
+
+        .products-container {
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .products-title {
+            font-size: 2rem;
+        }
+
+        .category-filters {
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .product-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Discover Premium Apple Products</h1>
+        <p class="hero-subtitle">Experience cutting-edge technology with authentic Apple devices. From iPhones to MacBooks, find your perfect Apple companion.</p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Authentic</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Support</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">Free</span>
+                <span class="stat-label">Delivery</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-image">
+        <div class="floating-products">
+            <div class="product-float iphone-float">📱</div>
+            <div class="product-float macbook-float">💻</div>
+            <div class="product-float airpods-float">🎧</div>
+            <div class="product-float watch-float">⌚</div>
+        </div>
+    </div>
+</div>
+
+<div class="products-container">
+    <h1 class="products-title">Our Premium Apple Products</h1>
+    
+    <!-- Category Filters -->
+    <div class="category-filters">
+        <a href="?category=all" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">All Products</a>
+        <a href="?category=iphone" class="filter-btn iphone {% if selected_category == 'iphone' %}active{% endif %}">📱 iPhone</a>
+        <a href="?category=mac" class="filter-btn mac {% if selected_category == 'mac' %}active{% endif %}">💻 Mac</a>
+        <a href="?category=airpods" class="filter-btn airpods {% if selected_category == 'airpods' %}active{% endif %}">🎧 AirPods</a>
+        <a href="?category=watch" class="filter-btn watch {% if selected_category == 'watch' %}active{% endif %}">⌚ Apple Watch</a>
+    </div>
+    
+    <!-- iPhone Category -->
+    <div class="category-section" data-category="iphone">
+        <h2 class="category-title">iPhones</h2>
+        <div class="product-grid">
+            <div class="product-card" data-category="iphone">
+                <div class="discount-badge">-15%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/iphone16promax.jpeg' %}" alt="iPhone 15 Pro Max" class="product-image">
+                <div class="product-title">iPhone 15 Pro Max</div>
+                <div class="product-specs">6.7" OLED • A17 Pro Chip • 256GB-1TB • 48MP Camera • 5G</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,49,900</span>
+                    <span class="store-price">₹1,27,415 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="iphone">
+                <div class="discount-badge">-12%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/iphone15pro.jpeg' %}" alt="iPhone 15 Pro" class="product-image">
+                <div class="product-title">iPhone 15 Pro</div>
+                <div class="product-specs">6.1" OLED • A17 Pro Chip • 128GB-1TB • 48MP Camera • 5G</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,34,900</span>
+                    <span class="store-price">₹1,18,712 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="discount-badge">-10%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/iphone15plus.jpeg' %}" alt="iPhone 15 Plus" class="product-image">
+                <div class="product-title">iPhone 15 Plus</div>
+                <div class="product-specs">6.7" OLED • A16 Bionic • 128GB-512GB • 48MP Camera • 5G</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,19,900</span>
+                    <span class="store-price">₹1,07,910 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="discount-badge">-8%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/iphone15.jpeg' %}" alt="iPhone 15" class="product-image">
+                <div class="product-title">iPhone 15</div>
+                <div class="product-specs">6.1" OLED • A16 Bionic • 128GB-512GB • 48MP Camera • 5G</div>
+                <div class="price-section">
+                    <span class="original-price">₹79,900</span>
+                    <span class="store-price">₹73,508 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="discount-badge">-20%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/iphone14promax.jpeg' %}" alt="iPhone 14 Pro Max" class="product-image">
+                <div class="product-title">iPhone 14 Pro Max</div>
+                <div class="product-specs">6.7" OLED • A16 Bionic • 128GB-1TB • 48MP Camera • 5G</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,39,900</span>
+                    <span class="store-price">₹1,11,920 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="discount-badge">-18%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/iphone14pro.jpeg' %}" alt="iPhone 14 Pro" class="product-image">
+                <div class="product-title">iPhone 14 Pro</div>
+                <div class="product-specs">6.1" OLED • A16 Bionic • 128GB-1TB • 48MP Camera • 5G</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,29,900</span>
+                    <span class="store-price">₹1,06,518 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MacBook Category -->
+    <div class="category-section" data-category="mac">
+        <h2 class="category-title">MacBooks</h2>
+        <div class="product-grid">
+            <div class="product-card" data-category="mac">
+                <div class="discount-badge">-12%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/macbook1.jpeg' %}" alt="MacBook Pro 16" M3 Max" class="product-image">
+                <div class="product-title">MacBook Pro 16" M3 Max</div>
+                <div class="product-specs">16.2" Liquid Retina XDR • M3 Max Chip • 18-128GB RAM • 512GB-8TB</div>
+                <div class="price-section">
+                    <span class="original-price">₹3,49,900</span>
+                    <span class="store-price">₹3,07,912 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="mac">
+                <div class="discount-badge">-10%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/macbook2.jpeg' %}" alt="MacBook Pro 14" M3 Pro" class="product-image">
+                <div class="product-title">MacBook Pro 14" M3 Pro</div>
+                <div class="product-specs">14.2" Liquid Retina XDR • M3 Pro Chip • 18-36GB RAM • 512GB-4TB</div>
+                <div class="price-section">
+                    <span class="original-price">₹2,49,900</span>
+                    <span class="store-price">₹2,24,910 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="mac">
+                <div class="discount-badge">-8%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/macbook3.jpeg' %}" alt="MacBook Air 15" M2" class="product-image">
+                <div class="product-title">MacBook Air 15" M2</div>
+                <div class="product-specs">15.3" Liquid Retina • M2 Chip • 8-24GB RAM • 256GB-2TB</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,49,900</span>
+                    <span class="store-price">₹1,37,908 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="mac">
+                <div class="discount-badge">-15%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/macbook4.jpeg' %}" alt="MacBook Air 13" M2" class="product-image">
+                <div class="product-title">MacBook Air 13" M2</div>
+                <div class="product-specs">13.6" Liquid Retina • M2 Chip • 8-24GB RAM • 256GB-2TB</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,19,900</span>
+                    <span class="store-price">₹1,01,915 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="mac">
+                <div class="discount-badge">-20%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/macbook5.jpeg' %}" alt="MacBook Pro 13" M2" class="product-image">
+                <div class="product-title">MacBook Pro 13" M2</div>
+                <div class="product-specs">13.3" Retina • M2 Chip • 8-24GB RAM • 256GB-2TB</div>
+                <div class="price-section">
+                    <span class="original-price">₹1,29,900</span>
+                    <span class="store-price">₹1,03,920 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="mac">
+                <div class="discount-badge">-25%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/macbook6.jpeg' %}" alt="MacBook Air M1" class="product-image">
+                <div class="product-title">MacBook Air M1</div>
+                <div class="product-specs">13.3" Retina • M1 Chip • 8-16GB RAM • 256GB-2TB</div>
+                <div class="price-section">
+                    <span class="original-price">₹99,900</span>
+                    <span class="store-price">₹74,925 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AirPods Category -->
+    <div class="category-section" data-category="airpods">
+        <h2 class="category-title">AirPods & Audio</h2>
+        <div class="product-grid">
+            <div class="product-card" data-category="airpods">
+                <div class="discount-badge">-10%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/airpods1.jpeg' %}" alt="AirPods Pro 2 USB-C" class="product-image">
+                <div class="product-title">AirPods Pro 2 (USB-C)</div>
+                <div class="product-specs">In-ear • Active Noise Cancellation • Spatial Audio • Wireless Charging</div>
+                <div class="price-section">
+                    <span class="original-price">₹24,900</span>
+                    <span class="store-price">₹22,410 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="airpods">
+                <div class="discount-badge">-15%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/airpods2.jpeg' %}" alt="AirPods Pro 2 Lightning" class="product-image">
+                <div class="product-title">AirPods Pro 2 (Lightning)</div>
+                <div class="product-specs">In-ear • Active Noise Cancellation • Spatial Audio • Wireless Charging</div>
+                <div class="price-section">
+                    <span class="original-price">₹24,900</span>
+                    <span class="store-price">₹21,165 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="airpods">
+                <div class="discount-badge">-20%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/airpods3.jpeg' %}" alt="AirPods 3" class="product-image">
+                <div class="product-title">AirPods 3</div>
+                <div class="product-specs">Semi-in-ear • Spatial Audio • Wireless Charging • Sweat & Water Resistant</div>
+                <div class="price-section">
+                    <span class="original-price">₹19,900</span>
+                    <span class="store-price">₹15,920 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="airpods">
+                <div class="discount-badge">-25%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/airpods4.jpeg' %}" alt="AirPods Max" class="product-image">
+                <div class="product-title">AirPods Max</div>
+                <div class="product-specs">Over-ear • Active Noise Cancellation • Spatial Audio • Premium Design</div>
+                <div class="price-section">
+                    <span class="original-price">₹59,900</span>
+                    <span class="store-price">₹44,925 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="airpods">
+                <div class="discount-badge">-30%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/airpods5.jpeg' %}" alt="Beats Fit Pro" class="product-image">
+                <div class="product-title">Beats Fit Pro</div>
+                <div class="product-specs">In-ear with Hook • Active Noise Cancellation • Spatial Audio • Wireless Charging</div>
+                <div class="price-section">
+                    <span class="original-price">₹19,900</span>
+                    <span class="store-price">₹13,930 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="airpods">
+                <div class="discount-badge">-35%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/airpods6.jpeg' %}" alt="Beats Studio Buds+" class="product-image">
+                <div class="product-title">Beats Studio Buds+</div>
+                <div class="product-specs">In-ear • Active Noise Cancellation • Spatial Audio • Wireless Charging</div>
+                <div class="price-section">
+                    <span class="original-price">₹16,900</span>
+                    <span class="store-price">₹10,985 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+
+    <!-- Apple Watch Category -->
+    <div class="category-section" data-category="watch">
+        <h2 class="category-title">Apple Watch</h2>
+        <div class="product-grid">
+            <div class="product-card" data-category="watch">
+                <div class="discount-badge">-8%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/watch1.jpeg' %}" alt="Apple Watch Series 9" class="product-image">
+                <div class="product-title">Apple Watch Series 9</div>
+                <div class="product-specs">41/45mm • S9 Chip • ECG, Blood O2, Temperature • 2023</div>
+                <div class="price-section">
+                    <span class="original-price">₹41,900</span>
+                    <span class="store-price">₹38,548 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="watch">
+                <div class="discount-badge">-5%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/watch2.jpeg' %}" alt="Apple Watch Ultra 2" class="product-image">
+                <div class="product-title">Apple Watch Ultra 2</div>
+                <div class="product-specs">49mm • S9 Chip • ECG, Dive, Depth • Titanium Case • 2023</div>
+                <div class="price-section">
+                    <span class="original-price">₹89,900</span>
+                    <span class="store-price">₹85,405 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="watch">
+                <div class="discount-badge">-15%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/watch3.jpeg' %}" alt="Apple Watch SE 2nd Gen" class="product-image">
+                <div class="product-title">Apple Watch SE (2nd Gen)</div>
+                <div class="product-specs">40/44mm • S8 Chip • Basic Health Features • 2022</div>
+                <div class="price-section">
+                    <span class="original-price">₹29,900</span>
+                    <span class="store-price">₹25,415 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="watch">
+                <div class="discount-badge">-20%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/watch4.jpeg' %}" alt="Apple Watch Series 8" class="product-image">
+                <div class="product-title">Apple Watch Series 8</div>
+                <div class="product-specs">41/45mm • S8 Chip • ECG, Temperature • Crash Detection • 2022</div>
+                <div class="price-section">
+                    <span class="original-price">₹39,900</span>
+                    <span class="store-price">₹31,920 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+            
+            <div class="product-card" data-category="watch">
+                <div class="discount-badge">-25%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/watch5.jpeg' %}" alt="Apple Watch Ultra" class="product-image">
+                <div class="product-title">Apple Watch Ultra</div>
+                <div class="product-specs">49mm • S8 Chip • ECG, Dive, Depth • Titanium Case • 2022</div>
+                <div class="price-section">
+                    <span class="original-price">₹89,900</span>
+                    <span class="store-price">₹67,425 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            <div class="product-card" data-category="watch">
+                <div class="discount-badge">-30%</div>
+                <button class="like-btn"><i class="fa fa-heart"></i></button>
+                <img src="{% static 'images/watch6.jpeg' %}" alt="Apple Watch Series 7" class="product-image">
+                <div class="product-title">Apple Watch Series 7</div>
+                <div class="product-specs">41/45mm • S7 Chip • ECG, Blood O2 • Always-On Display • 2021</div>
+                <div class="price-section">
+                    <span class="original-price">₹39,900</span>
+                    <span class="store-price">₹27,930 </span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-cart">Add to Cart</button>
+                    
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    // Category filtering functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedCategory = urlParams.get('category') || 'all';
+        
+        // Show/hide category sections based on selected category
+        const categorySections = document.querySelectorAll('.category-section');
+        categorySections.forEach(section => {
+            const sectionCategory = section.getAttribute('data-category');
+            if (selectedCategory === 'all' || sectionCategory === selectedCategory) {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+        
+        // Update page title based on selected category
+        const categoryTitles = {
+            'all': 'All Products',
+            'iphone': 'iPhone Products',
+            'mac': 'Mac Products',
+            'airpods': 'AirPods & Audio Products',
+            'watch': 'Apple Watch Products'
+        };
+        
+        if (categoryTitles[selectedCategory]) {
+            document.querySelector('.products-title').textContent = categoryTitles[selectedCategory];
+        }
+    });
+</script>
+{% endblock %}

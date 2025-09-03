@@ -1,0 +1,1242 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Cart - MACESSENTIALSTORE{% endblock %}
+
+{% block extra_css %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --primary: 222.2 47.4% 11.2%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96.1%;
+            --secondary-foreground: 222.2 47.4% 11.2%;
+            --muted: 210 40% 96.1%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 210 40% 96.1%;
+            --accent-foreground: 222.2 47.4% 11.2%;
+            --border: 214.3 31.8% 91.4%;
+            --radius: 0.5rem;
+            --apple-blue: 210 100% 60%;
+            --apple-blue-light: 210 100% 70%;
+            --apple-gray: 220 13% 91%;
+            --apple-dark: 220 13% 18%;
+            --gradient-primary: linear-gradient(135deg, hsl(var(--apple-blue)), hsl(var(--apple-blue-light)));
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            --shadow-elegant: 0 10px 30px -10px hsl(var(--apple-blue) / 0.3);
+            --shadow-card: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-float: 0 20px 40px rgba(0,0,0,0.1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .dark {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --primary: 210 40% 98%;
+            --primary-foreground: 222.2 47.4% 11.2%;
+            --secondary: 217.2 32.6% 17.5%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --accent: 217.2 32.6% 17.5%;
+            --accent-foreground: 210 40% 98%;
+            --border: 217.2 32.6% 17.5%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: hsl(var(--foreground));
+            background: hsl(var(--background));
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+ 
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid hsl(var(--border));
+            padding: 1rem 2rem;
+            transition: var(--transition-smooth);
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-card);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: hsl(var(--primary));
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: hsl(var(--foreground));
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: hsl(var(--apple-blue));
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: hsl(var(--apple-blue));
+            transition: var(--transition-smooth);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .hero-bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #ee5a24 100%);
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.2s forwards;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.4s forwards;
+        }
+
+        .btn-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition-bounce);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        .btn-hero:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-float);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.8s forwards;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-hero:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-float);
+        } 
+
+        .btn-hero.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Offers Section */
+        .offers {
+            padding: 2rem;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+
+        .offer-banner {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .offer-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .offer-timer {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .offer-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 6rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: hsl(var(--primary));
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-smooth);
+            border: 1px solid hsl(var(--border));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-float);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: hsl(var(--primary));
+        }
+
+        .category-card p {
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .category-count {
+            background: hsl(var(--apple-blue));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Products Section */
+        .products {
+            padding: 6rem 2rem;
+            background: hsl(var(--background));
+        }
+
+        .product-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid hsl(var(--border));
+            background: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-weight: 500;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: hsl(var(--apple-blue));
+            color: white;
+            border-color: hsl(var(--apple-blue));
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-smooth);
+            border: 1px solid hsl(var(--border));
+            opacity: 0;
+            transform: translateY(40px);
+            position: relative;
+        }
+
+        .product-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-float);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: hsl(var(--apple-blue));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: hsl(var(--primary));
+        }
+
+        .product-subtitle {
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 1rem;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            color: #fbbf24;
+        }
+
+        .rating-text {
+            font-size: 0.9rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: hsl(var(--apple-blue));
+            margin-bottom: 1rem;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: hsl(var(--muted-foreground));
+            font-weight: normal;
+            font-size: 1rem;
+        }
+
+        .emi-info {
+            color: hsl(var(--muted-foreground));
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .product-features {
+            color: hsl(var(--muted-foreground));
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-add-to-cart {
+            flex: 1;
+            padding: 0.75rem;
+            background: hsl(var(--apple-blue));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-add-to-cart:hover {
+            background: hsl(var(--apple-blue-light));
+        }
+
+        .btn-wishlist,
+        .btn-compare {
+            width: 40px;
+            height: 40px;
+            border: 1px solid hsl(var(--border));
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-wishlist:hover,
+        .btn-compare:hover {
+            background: hsl(var(--secondary));
+        }
+
+        /* Why Choose Us Section */
+        .why-choose-us {
+            padding: 6rem 2rem;
+            background: hsl(var(--background));
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid hsl(var(--border));
+            transition: var(--transition-smooth);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-float);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: hsl(var(--primary));
+        }
+
+        .feature-card p {
+            color: hsl(var(--muted-foreground));
+            line-height: 1.6;
+        }
+
+        /* Reviews Section */
+        .reviews {
+            padding: 6rem 2rem;
+            background: hsl(var(--secondary));
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .review-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid hsl(var(--border));
+        }
+
+        .review-rating {
+            color: #fbbf24;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-text {
+            color: hsl(var(--foreground));
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .review-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: hsl(var(--apple-blue));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .author-info h4 {
+            margin-bottom: 0.25rem;
+            color: hsl(var(--primary));
+        }
+
+        .author-info span {
+            color: hsl(var(--muted-foreground));
+            font-size: 0.9rem;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 6rem 2rem;
+            background: hsl(var(--secondary));
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-smooth);
+            border: 1px solid hsl(var(--border));
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .service-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-float);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: hsl(var(--primary));
+        }
+
+        .service-description {
+            color: hsl(var(--muted-foreground));
+            line-height: 1.6;
+        }
+
+        .service-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: hsl(var(--apple-blue));
+            margin: 1rem 0;
+        }
+
+        .service-btn {
+            padding: 0.75rem 1.5rem;
+            background: hsl(var(--apple-blue));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            width: 100%;
+        }
+
+        .service-btn:hover {
+            background: hsl(var(--apple-blue-light));
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            box-shadow: var(--shadow-elegant);
+            transition: var(--transition-bounce);
+            z-index: 100;
+            opacity: 0;
+        }
+
+        .fab.visible {
+            opacity: 1;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-float);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-stats {
+                gap: 1.5rem;
+            }
+
+            .offer-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fab {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+{% endblock %}
+
+{% block content %}
+
+<body id="home">
+    <!-- Header -->
+    {% csrf_token %}
+    
+<section class="hero">
+<img src="{% static 'images/BG.jpg' %}" alt="Background" class="hero-bg-video" id="heroVideo" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 0; opacity: 0.7;">    <div class="hero-content">
+        <h1 style="display:flex;align-items:center;justify-content:center;gap:1rem;">
+            <span>Premium Apple Products</span>
+        </h1>
+        <p>Discover the latest iPhone, Mac, iPad, and more with exclusive offers and genuine warranty</p>
+        <div class="hero-buttons">
+            <a href="#products" class="btn-hero">
+                Shop Now
+                <span>→</span>
+            </a>
+            <a href="#services" class="btn-hero secondary">
+                Learn More
+            </a>
+        </div>
+    </div>
+</section>
+    <!-- Product Categories -->
+    <section class="categories" style="background: linear-gradient(135deg, #fafdff 60%, #e3f0ff 100%); position:relative;">
+      <div class="container">
+        <h2 class="section-title" style="color:#000000; font-size:2.2rem; letter-spacing:2px; margin-bottom:2.5rem; font-weight:700; background:none;">Shop by Category</h2>
+        <div class="category-grid" style="gap:2.5rem;">
+          <div class="category-card" style="background: #fff; box-shadow: 0 4px 16px rgba(52,152,219,0.08); border: none; position:relative; overflow:hidden;">
+            <a href="/products" target="_blank" rel="noopener" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;text-indent:-9999px;background:rgba(0,0,0,0);"></a>
+            <div class="category-icon" style="font-size:2.5rem; background: #eaf6fb; color:#3498db; border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem auto; box-shadow:0 2px 8px rgba(52,152,219,0.10);">📱</div>
+            <h3 style="font-size:1.1rem; color:#3498db; font-weight:700;">iPhone</h3>
+            <p style="color:#555; margin-bottom:1rem;">Latest iPhone models with cutting-edge technology</p>
+            <span class="category-count" style="background:#eaf6fb; color:#3498db; font-weight:700; padding:0.3rem 1rem; border-radius:30px; font-size:0.9rem;"><a href="/products" target="_blank" rel="noopener" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;text-indent:-9999px;background:rgba(0,0,0,0);">12 Models</a></span>
+          </div>
+          <div class="category-card" style="background: #fff; box-shadow: 0 4px 16px rgba(52,152,219,0.08); border: none; position:relative; overflow:hidden;">
+            <a href="https://www.apple.com/in/shop/buy-mac" target="_blank" rel="noopener" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;text-indent:-9999px;background:rgba(0,0,0,0);"></a>
+            <div class="category-icon" style="font-size:2.5rem; background: #eaf6fb; color:#3498db; border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem auto; box-shadow:0 2px 8px rgba(52,152,219,0.10);">💻</div>
+            <h3 style="font-size:1.1rem; color:#3498db; font-weight:700;">Mac</h3>
+            <p style="color:#555; margin-bottom:1rem;">Powerful computers for every creative professional</p>
+            <span class="category-count" style="background:#eaf6fb; color:#3498db; font-weight:700; padding:0.3rem 1rem; border-radius:30px; font-size:0.9rem;">8 Models</span>
+          </div>
+          <div class="category-card" style="background: #fff; box-shadow: 0 4px 16px rgba(52,152,219,0.08); border: none; position:relative; overflow:hidden;">
+            <a href="https://www.apple.com/in/airpods" target="_blank" rel="noopener" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;text-indent:-9999px;background:rgba(0,0,0,0);"></a>
+            <div class="category-icon" style="font-size:2.5rem; background: #eaf6fb; color:#3498db; border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem auto; box-shadow:0 2px 8px rgba(52,152,219,0.10);">🎧</div>
+            <h3 style="font-size:1.1rem; color:#3498db; font-weight:700;">AirPods</h3>
+            <p style="color:#555; margin-bottom:1rem;">Immersive audio experience with sound</p>
+            <span class="category-count" style="background:#eaf6fb; color:#3498db; font-weight:700; padding:0.3rem 1rem; border-radius:30px; font-size:0.9rem;">5 Models</span>
+            </div>
+          <div class="category-card" style="background: #fff; box-shadow: 0 4px 16px rgba(52,152,219,0.08); border: none; position:relative; overflow:hidden;">
+            <a href="https://www.apple.com/in/watch" target="_blank" rel="noopener" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;text-indent:-9999px;background:rgba(0,0,0,0);"></a>                 
+            <div class="category-icon" style="font-size:2.5rem; background: #eaf6fb; color:#3498db; border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem auto; box-shadow:0 2px 8px rgba(52,152,219,0.10);">⌚</div>
+            <h3 style="font-size:1.1rem; color:#3498db; font-weight:700;">Apple Watch</h3>
+            <p style="color:#555; margin-bottom:1rem;">Health and fitness companion on your wrist</p>
+            <span class="category-count" style="background:#eaf6fb; color:#3498db; font-weight:700; padding:0.3rem 1rem; border-radius:30px; font-size:0.9rem;">4 Models</span>
+          </div>
+        </div>
+      </div>
+    </section>
+        <div class="container" name="products" id="products">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="product-filters">
+                <button class="filter-btn active" data-filter="all">All Products</button>
+                <button class="filter-btn" data-filter="iphone">iPhone</button>
+                <button class="filter-btn" data-filter="mac">Mac</button>
+                <button class="filter-btn" data-filter="ipad">iPad</button>
+                <button class="filter-btn" data-filter="watch">Watch</button>
+                <button class="filter-btn" data-filter="audio">Audio</button>
+            </div>
+            <div class="product-grid">
+                <div class="product-card visible" data-category="iphone">
+                    <div class="product-badge">New</div>
+                    <img src="{% static 'images/iphone15pro.jpeg'%}" alt="iPhone 16 Pro" class="product-image">
+                    <h3 class="product-title">iPhone 16 Pro</h3>
+                    <p class="product-subtitle">Apple Intelligence</p>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.9 (2,847 reviews)</span>
+                    </div>
+                    <p class="product-price">From ₹119,900 <span class="original-price">₹129,900</span></p>
+                    <p class="product-features">• A18 Pro chip with 6-core GPU<br>• Pro camera system with 5x Telephoto<br>• Titanium design in 4 colors<br>• Action Button and USB-C</p>
+                    <div class="product-actions">
+                        <button class="btn-add-to-cart">Add to Cart</button>
+                        <button class="btn-wishlist">♡</button>
+                        <button class="btn-compare">⚖</button>
+                    </div>
+                </div>
+                <div class="product-card visible" data-category="mac">
+                    <div class="product-badge">Popular</div>
+                    <img src="{% static 'images/macbook1.jpeg'%}" alt="MacBook Pro" class="product-image">
+                    <h3 class="product-title">MacBook Pro 14"</h3>
+                    <p class="product-subtitle">M3 Pro Chip</p>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.8 (1,923 reviews)</span>
+                    </div>
+                    <p class="product-price">From ₹199,900 <span class="emi-info">₹16,658/mo*</span></p>
+                    <p class="product-features">• M3 Pro chip with 18-core GPU<br>• 14.2" Liquid Retina XDR display<br>• 22-hour battery life<br>• Advanced camera and audio</p>
+                    <div class="product-actions">
+                        <button class="btn-add-to-cart">Add to Cart</button>
+                        <button class="btn-wishlist">♡</button>
+                        <button class="btn-compare">⚖</button>
+                    </div>
+                </div>
+                <div class="product-card visible" data-category="ipad"><div class="product-badge">Premium</div>
+                    <img src="{% static 'images/ipad.jpeg'%}" alt="iPad Air" class="product-image">
+                    <h3 class="product-title">iPad Air 11"</h3>
+                    <p class="product-subtitle">M2 Chip</p>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.7 (3,456 reviews)</span>
+                    </div>
+                    <p class="product-price">From ₹59,900 <span class="emi-info">₹4,992/mo*</span></p>
+                    <p class="product-features">• M2 chip with 10-core GPU<br>• 11" Liquid Retina display<br>• Apple Pencil Pro support<br>• Magic Keyboard compatible</p>
+                    <div class="product-actions">
+                        <button class="btn-add-to-cart">Add to Cart</button>
+                        <button class="btn-wishlist">♡</button>
+                        <button class="btn-compare">⚖</button>
+                    </div>
+                </div>
+                <div class="product-card visible" data-category="watch">
+                    <div class="product-badge">Health</div>
+                    <img src="{% static 'images/watch1.jpeg'%}" alt="Apple Watch" class="product-image">
+                    <h3 class="product-title">Apple Watch Series 10</h3>
+                    <p class="product-subtitle">GPS + Cellular</p>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.9 (5,234 reviews)</span>
+                    </div>
+                    <p class="product-price">From ₹46,900 <span class="emi-info">₹3,908/mo*</span></p>
+                    <p class="product-features">• Always-On Retina display<br>• ECG app & Blood Oxygen sensor<br>• Water resistant to 50 meters<br>• Emergency SOS & Fall Detection</p>
+                    <div class="product-actions">
+                        <button class="btn-add-to-cart">Add to Cart</button>
+                        <button class="btn-wishlist">♡</button>
+                        <button class="btn-compare">⚖</button>
+                    </div>
+                </div>
+                <div class="product-card visible" data-category="audio">
+                    <div class="product-badge">Premium</div>
+                    <img src="{% static 'images/airpods1.jpeg'%}" alt="AirPods Pro" class="product-image">
+                    <h3 class="product-title">AirPods Pro (2nd gen)</h3>
+                    <p class="product-subtitle">USB-C</p>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.8 (4,567 reviews)</span>
+                    </div>
+                    <p class="product-price">From ₹24,900 <span class="emi-info">₹2,075/mo*</span></p>
+                    <p class="product-features">• Active Noise Cancellation<br>• Adaptive Audio & Spatial Audio<br>• USB-C charging case<br>• Up to 30 hours battery life</p>
+                    <div class="product-actions">
+                        <button class="btn-add-to-cart">Add to Cart</button>
+                        <button class="btn-wishlist">♡</button>
+                        <button class="btn-compare">⚖</button>
+                    </div>
+                </div>
+                <div class="product-card visible" data-category="mac">
+                    <div class="product-badge">Premium</div>
+                    <img src="{% static 'images/studio.jpeg'%}" alt="Studio Display" class="product-image">
+                    <h3 class="product-title">Studio Display</h3>
+                    <p class="product-subtitle">27-inch 5K</p>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-text">4.6 (892 reviews)</span>
+                    </div>
+                    <p class="product-price">From ₹159,900 <span class="emi-info">₹13,325/mo*</span></p>
+                    <p class="product-features">• 5K Retina display (5120x2880)<br>• 12MP Ultra Wide camera<br>• Studio-quality three-mic array<br>• Six-speaker sound system</p>
+                    <div class="product-actions">
+                        <button class="btn-add-to-cart">Add to Cart</button>
+                        <button class="btn-wishlist">♡</button>
+                        <button class="btn-compare">⚖</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="why-choose-us">
+        <div class="container">
+            <h2 class="section-title">Why Choose MACESSENTIALSTORE?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Free Delivery</h3>
+                    <p>Free delivery on orders above ₹1,990. Get your Apple products delivered safely to your doorstep.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Secure Payment</h3>
+                    <p>100% secure payment with SSL encryption. Multiple payment options including UPI, Cards, and EMI.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Easy Returns</h3>
+                    <p>14-day easy return policy. No questions asked returns for unopened products in original packaging.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Warranty</h3>
+                    <p>Official Apple warranty on all products. Extended warranty options available for complete peace of mind.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Expert Support</h3>
+                    <p>24/7 customer support from Apple-certified technicians. Get help with setup, troubleshooting, and more.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Authentic Products</h3>
+                    <p>100% genuine Apple products sourced directly from Apple. No duplicates or refurbished items.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reviews">
+        <div class="container">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">"Amazing service! Got my iPhone 16 Pro delivered next day. The packaging was perfect and the product is exactly as described. Highly recommended!"</p>
+                    <div class="review-author">
+                        <div class="author-avatar">R</div>
+                        <div class="author-info">
+                            <h4>Raviya</h4>
+                            <span>Verified Buyer</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">"Best place to buy Apple products in India. Great prices, authentic products, and excellent customer service. The EMI options are very helpful."</p>
+                    <div class="review-author">
+                        <div class="author-avatar">L</div>
+                        <div class="author-info">
+                            <h4>Lokesh Raj</h4>
+                            <span>Verified Buyer</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">"Purchased MacBook Pro for my design work. The performance is incredible and the customer support helped me choose the right configuration."</p>
+                    <div class="review-author">
+                        <div class="author-avatar">B</div>
+                        <div class="author-info">
+                            <h4>Baskar</h4>
+                            <span>Verified Buyer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Apple Subscriptions</h2>
+            <p class="section-subtitle">Get 3 months free with the purchase of selected Apple devices</p>
+            <div class="services-grid">
+                <div class="service-card visible">
+                    <h3 class="service-title">Apple Music</h3>
+                    <p class="service-description">Over 100 million songs and original shows from artists you love.</p>
+                    <div class="service-price">₹99/month</div>
+                    <a href="https://music.apple.com/us/new" target="_blank" rel="noopener" class="service-btn" style="display:inline-block;text-decoration:none;color:white;">Try Free</a>
+                </div>
+                <div class="service-card visible">
+                    <h3 class="service-title">Apple TV+</h3>
+                    <p class="service-description">Award-winning original shows and movies from Apple. Watch on all your devices.</p>
+                    <div class="service-price">₹99/month</div>
+                    <a href="https://tv.apple.com/" target="_blank" rel="noopener" class="service-btn" style="display:inline-block;text-decoration:none;color:white;">Try Free</a>
+                </div>
+                <div class="service-card visible">
+                    <h3 class="service-title">Apple Arcade</h3>
+                    <p class="service-description">Over 200 premium games with no ads or in-app purchases. Play across all devices.</p>
+                    <div class="service-price">₹99/month</div>
+                    <a href="https://www.apple.com/in/apple-arcade/" target="_blank" rel="noopener" class="service-btn" style="display:inline-block;text-decoration:none;color:white;">Try Free</a>
+                </div>
+                <div class="service-card visible">
+                    <h3 class="service-title">iCloud+</h3>
+                    <p class="service-description">Keep your photos, files, and more secure and accessible from anywhere.</p>
+                    <div class="service-price">₹75/month</div>
+                    <a href="https://www.icloud.com/" target="_blank" rel="noopener" class="service-btn" style="display:inline-block;text-decoration:none;color:white;">Try Free</a>
+                </div>
+                <div class="service-card visible">
+                    <h3 class="service-title">AppleCare+</h3>
+                    <p class="service-description">Extended warranty and technical support for your Apple devices.</p>
+                    <div class="service-price">₹199/month</div>
+                    <a href="https://www.apple.com/in/support/products/" target="_blank" rel="noopener" class="service-btn" style="display:inline-block;text-decoration:none;color:white;">Try Free</a>
+                </div>
+                <div class="service-card visible">
+                    <h3 class="service-title">Apple Card</h3>
+                    <p class="service-description">A credit card created by Apple, designed for iPhone and built on privacy.</p>
+                    <div class="service-price">No Fees</div>
+                    <a href="https://www.apple.com/apple-card/" target="_blank" rel="noopener" class="service-btn" style="display:inline-block;text-decoration:none;color:white;">Try Free</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Product filtering
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const productCards = document.querySelectorAll('.product-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+
+                productCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+     
+        // Add to cart functionality (basic)
+        document.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.textContent = 'Added!';
+                btn.style.background = '#10b981';
+                setTimeout(() => {
+                    btn.textContent = 'Add to Cart';
+                    btn.style.background = '';
+                }, 2000);
+            });
+        });
+            // Cart and Wishlist functionality
+    let cart = [];
+    // Load cart from localStorage if available
+    if (localStorage.getItem('cart')) {
+        try {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+        } catch (e) {
+            cart = [];
+        }
+    }
+    const wishlist = [];
+
+    function updateCartDisplay() {
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        cartItems.innerHTML = '';
+        let total = 0;
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p>Your cart is empty.</p>';
+            cartTotal.innerHTML = '';
+            return;
+        }
+        cart.forEach(item => {
+            total += item.price * (item.qty || 1);
+            cartItems.innerHTML += `<div class="cart-item">
+                <img src="${item.img}" alt="${item.title}" style="width:60px;height:60px;border-radius:8px;vertical-align:middle;">
+                <span style="font-weight:600;">${item.title}</span> - ₹${item.price.toLocaleString()} x <strong>${item.qty || 1}</strong>
+                <button onclick="removeFromCart('${item.id}')" style="margin-left:10px;">Remove</button>
+            </div>`;
+        });
+        cartTotal.innerHTML = `<strong>Total: ₹${total.toLocaleString()}</strong>`;
+    }
+
+    function addToCart(id, title, price, img) {
+        const qtyInput = document.querySelectorAll('.product-card')[parseInt(id.replace('prod',''))]?.querySelector('.product-qty');
+        const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            cart.push({id, title, price, img, qty});
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+    }
+
+    function removeFromCart(id) {
+        const idx = cart.findIndex(item => item.id === id);
+        if (idx > -1) {
+            cart.splice(idx, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+    }
+
+    // Wishlist
+    function toggleWishlist(btn, id) {
+        if (wishlist.includes(id)) {
+            wishlist.splice(wishlist.indexOf(id), 1);
+            btn.classList.remove('active');
+            btn.innerHTML = '❤';
+        } else {
+            wishlist.push(id);
+            btn.classList.add('active');
+            btn.innerHTML = '❤';
+        }
+    }
+
+    // Attach to product cards
+    document.querySelectorAll('.product-card').forEach((card, idx) => {
+    const title = card.querySelector('.product-title').textContent;
+    const priceText = card.querySelector('.product-price').textContent.match(/\d{2,3}[,\d]*\d+/);
+    const price = priceText ? parseInt(priceText[0].replace(/,/g, '')) : 0;
+    const img = card.querySelector('.product-image').src;
+    const id = 'prod' + idx;
+    // Add to Cart
+    card.querySelector('.btn-add-to-cart').onclick = () => addToCart(id, title, price, img);
+    });
+</script>
+</body>
+   
+    {% endblock %}
+</html>

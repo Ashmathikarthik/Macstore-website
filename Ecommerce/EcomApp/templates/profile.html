@@ -1,0 +1,428 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - MACESSENTIALSTORE{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #7691e8 0%, #377cb7 100%);
+        color: white;
+        padding: 4rem 2rem;
+        margin-top: 64px;
+        position: relative;
+        overflow: hidden;
+        min-height: 500px;
+        display: flex;
+        align-items: center;    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        font-weight: 500;
+    }
+
+    .hero-image {
+        position: relative;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .floating-elements {
+        position: relative;
+        width: 300px;
+        height: 300px;
+    }
+
+    .float-element {
+        position: absolute;
+        font-size: 4rem;
+        animation: float 6s ease-in-out infinite;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    .profile-float {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .wallet-float {
+        top: 60%;
+        right: 10%;
+        animation-delay: 1.5s;
+    }
+
+    .security-float {
+        bottom: 20%;
+        left: 30%;
+        animation-delay: 3s;
+    }
+
+    .support-float {
+        top: 10%;
+        right: 30%;
+        animation-delay: 4.5s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(5deg); }
+        66% { transform: translateY(-10px) rotate(-5deg); }
+    }
+
+    /* Profile Container Styles */
+    .profile-container {
+        max-width: 800px;
+        margin: 60px auto 40px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto 1rem;
+        border: 4px solid rgba(255,255,255,0.3);
+    }
+    
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-email {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+    
+    .profile-content {
+        padding: 2rem;
+    }
+    
+    .profile-section {
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #f1f3f6;
+        padding-bottom: 0.5rem;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .info-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .info-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.25rem;
+    }
+    
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .wallet-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .wallet-amount {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .wallet-label {
+        opacity: 0.9;
+        font-size: 0.9rem;
+    }
+    
+    .btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1rem;
+            min-height: 400px;
+        }
+
+        .hero-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .hero-stats {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+        }
+
+        .hero-image {
+            height: 250px;
+        }
+
+        .floating-elements {
+            width: 200px;
+            height: 200px;
+        }
+
+        .float-element {
+            font-size: 2.5rem;
+        }
+
+        .profile-container {
+            margin: 2rem auto;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Welcome Back!</h1>
+        <p class="hero-subtitle">Manage your account, view your wallet balance, and track your orders all in one place.</p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ user.wallet_balance|floatformat:0 }}</span>
+                <span class="stat-label">Coins</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">Member</span>
+                <span class="stat-label">Since {{ user.date_joined|date:"M Y" }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Secure</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-image">
+        <div class="floating-elements">
+            <div class="float-element profile-float">👤</div>
+            <div class="float-element wallet-float">💰</div>
+            <div class="float-element security-float">🔒</div>
+            <div class="float-element support-float">🎧</div>
+        </div>
+    </div>
+</div>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {{ user.first_name|first|upper|default:user.email|first|upper }}
+        </div>
+        <div class="profile-name">{{ user.get_full_name|default:"User" }}</div>
+        <div class="profile-email">{{ user.email }}</div>
+    </div>
+    
+    <div class="profile-content">
+        <!-- Wallet Section -->
+        <div class="profile-section">
+            <h3 class="section-title">💰 Wallet Balance</h3>
+            <div class="wallet-card">
+                <div class="wallet-amount">₹{{ user.wallet_balance|floatformat:2 }}</div>
+                <div class="wallet-label">Available Coins</div>
+            </div>
+            <div class="action-buttons">
+                <a href="#" class="btn">Add Coins</a>
+                <a href="#" class="btn btn-secondary">Transaction History</a>
+            </div>
+        </div>
+        
+        <!-- Personal Information -->
+        <div class="profile-section">
+            <h3 class="section-title">👤 Personal Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">{{ user.get_full_name|default:"Not provided" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">{{ user.email }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value">{{ user.phone|default:"Not provided" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Member Since</div>
+                    <div class="info-value">{{ user.date_joined|date:"M d, Y" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Account Actions -->
+        <div class="profile-section">
+            <h3 class="section-title">⚙️ Account Actions</h3>
+            <div class="action-buttons">
+                <a href="#" class="btn">Edit Profile</a>
+                <a href="#" class="btn btn-secondary">Change Password</a>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

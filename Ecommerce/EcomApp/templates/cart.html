@@ -1,0 +1,929 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Cart - MACESSENTIALSTORE{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-container { 
+        max-width: 1400px; 
+        margin: 80px auto 40px; 
+        padding: 2rem; 
+        background: #f8f9fa;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .cart-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .left-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .right-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .panel-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #e1e5e9;
+        min-height: 200px;
+    }
+    
+    .cart-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 3rem;
+        text-align: center;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .section-header {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #3498db;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .cart-items {
+        margin-bottom: 2rem;
+        min-height: 300px;
+    }
+    
+    .cart-item {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(52,152,219,0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s;
+        border: 1px solid #e1e5e9;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cart-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+    
+    .cart-item:hover {
+        box-shadow: 0 8px 32px rgba(52,152,219,0.18);
+        transform: translateY(-4px);
+    }
+    
+    .cart-item img {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        margin-right: 1.5rem;
+        object-fit: cover;
+    }
+    
+    .cart-item-details {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .cart-item-title {
+        font-weight: 600;
+        color: #222;
+        font-size: 1.2rem;
+    }
+    
+    .cart-item-price {
+        color: #3498db;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    .cart-remove-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .cart-remove-btn:hover {
+        background: #c0392b;
+        transform: scale(1.05);
+    }
+    
+    .cart-total {
+        text-align: right;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #3498db;
+        margin-bottom: 2rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #e8f4fd, #d1ecf1);
+        border-radius: 12px;
+        border: 2px solid #bee5eb;
+    }
+    
+    .cart-actions {
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .checkout-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1.2rem 2.5rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .checkout-btn:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(52,152,219,0.3);
+    }
+    
+    .empty-cart {
+        color: #7f8c8d;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 3rem 0;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        border: 2px dashed #bdc3c7;
+        position: relative;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .empty-cart::before {
+        content: '🛒';
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .empty-cart-message {
+        font-size: 1.2rem;
+        color: #95a5a6;
+        margin-top: 1rem;
+    }
+    
+    .offers-section {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(52,152,219,0.08);
+        padding: 2rem;
+        margin: 2rem 0;
+        border: 1px solid #e1e5e9;
+        min-height: 200px;
+    }
+    
+    .offer-banner {
+        background: linear-gradient(135deg, #e8f4fd, #d1ecf1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border: 2px solid #bee5eb;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .offer-banner:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52,152,219,0.15);
+    }
+    
+    .offer-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+    
+    .offer-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #222;
+    }
+    
+    .offer-description {
+        color: #555;
+        margin-bottom: 1rem;
+    }
+    
+    .offer-code {
+        background: #3498db;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+        margin: 0.5rem;
+    }
+    
+    .suggested-products {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(52,152,219,0.08);
+        padding: 2rem;
+        margin: 2rem 0;
+        border: 1px solid #e1e5e9;
+    }
+    
+    .suggested-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .suggested-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid #e1e5e9;
+        transition: all 0.3s;
+    }
+    
+    .suggested-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(52,152,219,0.15);
+    }
+    
+    .suggested-item img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .suggested-item h4 {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        color: #222;
+    }
+    
+    .suggested-item .price {
+        color: #3498db;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+    
+    .add-suggested-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .add-suggested-btn:hover {
+        background: #2980b9;
+    }
+    
+    .cart-summary {
+        background: linear-gradient(135deg, #fff, #f8f9fa);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(52,152,219,0.12);
+        padding: 3rem;
+        margin: 3rem 0;
+        border: 2px solid #e1e5e9;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cart-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e1e5e9;
+    }
+    
+    .summary-row:last-child {
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #3498db;
+    }
+    
+    .discount-applied {
+        color: #27ae60;
+        font-weight: 600;
+    }
+    
+    .free-delivery {
+        background: #e8f5e8;
+        color: #27ae60;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .special-offers-section {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(52,152,219,0.08);
+        padding: 2rem;
+        margin: 2rem 0;
+        border: 1px solid #e1e5e9;
+    }
+    
+    .special-offers-section h3 {
+        color: #222;
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .offers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .offer-product-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid #e1e5e9;
+        transition: all 0.3s;
+        position: relative;
+    }
+    
+    .offer-product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(52,152,219,0.15);
+    }
+    
+    .offer-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #e74c3c;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .offer-product-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        object-fit: cover;
+    }
+    
+    .offer-product-title {
+        color: #222;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .offer-product-desc {
+        color: #555;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+    }
+    
+    .offer-price-section {
+        margin-bottom: 1rem;
+    }
+    
+    .original-price {
+        color: #95a5a6;
+        text-decoration: line-through;
+        font-size: 0.9rem;
+        margin-right: 0.5rem;
+    }
+    
+    .offer-price {
+        color: #e74c3c;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+    
+    .offer-discount {
+        background: #e74c3c;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+    
+    .offer-add-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+    }
+    
+    .offer-add-btn:hover {
+        background: #2980b9;
+        transform: scale(1.02);
+    }
+    
+    @media (max-width: 768px) {
+        .cart-container {
+            margin: 4rem 1rem;
+            padding: 1rem;
+        }
+        
+        .cart-layout {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .cart-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .cart-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="cart-container">
+        <div class="cart-title">🛒 My Cart</div>
+        
+        <div class="cart-layout">
+            <!-- Left Panel - Offers -->
+            <div class="left-panel">
+                <!-- Offers Section -->
+                <div class="panel-section offers-section" id="offersSection" style="display: none;">
+                    <div class="section-header">🎉 Special Offers Available!</div>
+                    <div class="offer-banner" id="headphoneOffer" style="display: none;">
+                        <div class="offer-title">🎧 Get 50% Off on AirPods Pro!</div>
+                        <div class="offer-description">Order value above ₹1,00,000 and get AirPods Pro at 50% discount!</div>
+                        <div class="offer-code">Use Code: HEADPHONE50</div>
+                    </div>
+                    <div class="offer-banner" id="deliveryOffer" style="display: none;">
+                        <div class="offer-title">🚚 Free Express Delivery!</div>
+                        <div class="offer-description">Order value above ₹50,000 and get free express delivery!</div>
+                        <div class="offer-code">Use Code: FREEDEL</div>
+                    </div>
+                    <div class="offer-banner" id="warrantyOffer" style="display: none;">
+                        <div class="offer-title">🛡️ Extended Warranty Free!</div>
+                        <div class="offer-description">Order value above ₹75,000 and get 1 year extended warranty free!</div>
+                        <div class="offer-code">Use Code: WARRANTY1</div>
+                    </div>
+                </div>
+
+                <!-- Suggested Products -->
+                <div class="panel-section suggested-products" id="suggestedProducts" style="display: none;">
+                    <div class="section-header">💡 You might also like:</div>
+                    <div class="suggested-grid" id="suggestedGrid"></div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Cart Items -->
+            <div class="right-panel">
+                <div class="panel-section cart-items" id="cartItems"></div>
+            </div>
+        </div>
+
+        <!-- Billing Section - Below the layout -->
+        <div class="cart-summary" id="cartSummary" style="display: none;">
+            <div class="section-header">💰 Order Summary</div>
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="subtotal">₹0</span>
+            </div>
+            <div class="summary-row" id="discountRow" style="display: none;">
+                <span>Discount:</span>
+                <span class="discount-applied" id="discountAmount">-₹0</span>
+            </div>
+            <div class="summary-row" id="deliveryRow">
+                <span>Delivery:</span>
+                <span id="deliveryCost">₹0</span>
+            </div>
+            <div class="summary-row">
+                <span>Total:</span>
+                <span id="finalTotal">₹0</span>
+            </div>
+            <div class="free-delivery" id="freeDeliveryMsg" style="display: none;">
+                🎉 Free Express Delivery Applied!
+            </div>
+        </div>
+
+        <div class="cart-total" id="cartTotal"></div>
+        <div class="cart-actions">
+            <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+
+        <!-- Special Offers Products Section - At the bottom -->
+        <div class="special-offers-section">
+            <div class="section-header" style="text-align: center; justify-content: center;">🎁 Special Offers - Limited Time!</div>
+            <div class="offers-grid" id="offersGrid"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const suggestedProducts = [
+        {
+            id: 'airpods-pro',
+            title: 'AirPods Pro (2nd gen)',
+            price: 24900,
+            img: '{% static "images/airpods.jpeg" %}',
+            category: 'audio'
+        },
+        {
+            id: 'apple-watch',
+            title: 'Apple Watch Series 10',
+            price: 46900,
+            img: '{% static "images/iwatch.jpeg" %}',
+            category: 'watch'
+        },
+        {
+            id: 'macbook-pro',
+            title: 'MacBook Pro 14"',
+            price: 199900,
+            img: '{% static "images/macbook.jpeg" %}',
+            category: 'mac'
+        }
+    ];
+    const specialOffers = [
+        {
+            id: 'airpods-max',
+            title: 'AirPods Max',
+            originalPrice: 59900,
+            offerPrice: 44900,
+            discount: '25% OFF',
+            img: '{% static "images/airpods.jpeg" %}',
+            description: 'Premium over-ear headphones with Active Noise Cancellation'
+        },
+        {
+            id: 'iphone-15',
+            title: 'iPhone 15 Pro',
+            originalPrice: 149900,
+            offerPrice: 129900,
+            discount: '13% OFF',
+            img: '{% static "images/iphone16pro.jpeg" %}',
+            description: 'Latest iPhone with A17 Pro chip and titanium design'
+        },
+        {
+            id: 'macbook-air',
+            title: 'MacBook Air 13"',
+            originalPrice: 114900,
+            offerPrice: 99900,
+            discount: '13% OFF',
+            img: '{% static "images/macbook.jpeg" %}',
+            description: 'Ultra-thin laptop with M2 chip and all-day battery'
+        },
+        {
+            id: 'ipad-pro',
+            title: 'iPad Pro 12.9"',
+            originalPrice: 119900,
+            offerPrice: 99900,
+            discount: '17% OFF',
+            img: '{% static "images/ipad.jpeg" %}',
+            description: 'Most powerful iPad with M2 chip and Liquid Retina XDR'
+        },
+        {
+            id: 'apple-watch-ultra',
+            title: 'Apple Watch Ultra',
+            originalPrice: 89900,
+            offerPrice: 74900,
+            discount: '17% OFF',
+            img: '{% static "images/iwatch.jpeg" %}',
+            description: 'Rugged and capable smartwatch for outdoor adventures'
+        },
+        {
+            id: 'studio-display',
+            title: 'Studio Display',
+            originalPrice: 159900,
+            offerPrice: 139900,
+            discount: '13% OFF',
+            img: '{% static "images/studio.jpeg" %}',
+            description: '27-inch 5K Retina display with camera and speakers'
+        }
+    ];
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+        const offersSection = document.getElementById('offersSection');
+        const cartSummary = document.getElementById('cartSummary');
+        const suggestedProducts = document.getElementById('suggestedProducts');
+        
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <div>Your cart is empty</div>
+                        <div class="empty-cart-message">Start shopping to add amazing Apple products!</div>
+                    </div>
+                `;
+                cartTotal.innerHTML = '';
+                offersSection.style.display = 'none';
+                cartSummary.style.display = 'none';
+                suggestedProducts.style.display = 'none';
+                return;
+            }
+
+        // Show offers and summary for non-empty cart
+        offersSection.style.display = 'block';
+        cartSummary.style.display = 'block';
+        suggestedProducts.style.display = 'block';
+
+            cart.forEach((item, idx) => {
+            total += item.price * (item.qty || 1);
+                cartItems.innerHTML += `
+                    <div class='cart-item'>
+                        <div class='cart-item-details'>
+                            <img src='${item.img}' alt='${item.title}'>
+                            <span class='cart-item-title'>${item.title}</span>
+                        <span class='cart-item-price'>₹${(item.price * (item.qty || 1)).toLocaleString()}</span>
+                        </div>
+                        <button class='cart-remove-btn' onclick='removeFromCart(${idx})'>Remove</button>
+                    </div>`;
+            });
+
+        // Check for offers
+        checkOffers(total);
+        
+        // Update summary
+        updateCartSummary(total);
+        
+        // Update suggested products
+        updateSuggestedProducts();
+        
+        // Update special offers
+        updateSpecialOffers();
+        
+            cartTotal.innerHTML = `<span>Total: ₹${total.toLocaleString()}</span>`;
+        }
+
+    function checkOffers(total) {
+        const headphoneOffer = document.getElementById('headphoneOffer');
+        const deliveryOffer = document.getElementById('deliveryOffer');
+        const warrantyOffer = document.getElementById('warrantyOffer');
+
+        // Reset all offers
+        headphoneOffer.style.display = 'none';
+        deliveryOffer.style.display = 'none';
+        warrantyOffer.style.display = 'none';
+
+        // Check conditions and show offers
+        if (total >= 100000) {
+            headphoneOffer.style.display = 'block';
+        }
+        if (total >= 50000) {
+            deliveryOffer.style.display = 'block';
+        }
+        if (total >= 75000) {
+            warrantyOffer.style.display = 'block';
+        }
+    }
+
+    function updateCartSummary(subtotal) {
+        const subtotalElement = document.getElementById('subtotal');
+        const discountRow = document.getElementById('discountRow');
+        const discountAmount = document.getElementById('discountAmount');
+        const deliveryRow = document.getElementById('deliveryRow');
+        const deliveryCost = document.getElementById('deliveryCost');
+        const finalTotal = document.getElementById('finalTotal');
+        const freeDeliveryMsg = document.getElementById('freeDeliveryMsg');
+
+        subtotalElement.textContent = `₹${subtotal.toLocaleString()}`;
+        
+        let discount = 0;
+        let delivery = 0;
+
+        // Apply offers based on total
+        if (subtotal >= 100000) {
+            // 50% off on AirPods Pro (if in cart)
+            const airpodsInCart = cart.find(item => item.title.includes('AirPods Pro'));
+            if (airpodsInCart) {
+                discount = airpodsInCart.price * 0.5;
+            }
+        }
+
+        if (subtotal >= 50000) {
+            delivery = 0; // Free delivery
+            freeDeliveryMsg.style.display = 'block';
+        } else {
+            delivery = 500; // Standard delivery
+            freeDeliveryMsg.style.display = 'none';
+        }
+
+        if (discount > 0) {
+            discountRow.style.display = 'flex';
+            discountAmount.textContent = `-₹${discount.toLocaleString()}`;
+        } else {
+            discountRow.style.display = 'none';
+        }
+
+        deliveryCost.textContent = delivery === 0 ? 'Free' : `₹${delivery.toLocaleString()}`;
+        
+        const final = subtotal - discount + delivery;
+        finalTotal.textContent = `₹${final.toLocaleString()}`;
+    }
+
+    function updateSuggestedProducts() {
+        const suggestedGrid = document.getElementById('suggestedGrid');
+        const cartTitles = cart.map(item => item.title);
+        
+        // Filter out products already in cart
+        const availableSuggestions = suggestedProducts.filter(product => 
+            !cartTitles.includes(product.title)
+        );
+
+        if (availableSuggestions.length === 0) {
+            document.getElementById('suggestedProducts').style.display = 'none';
+            return;
+        }
+
+        suggestedGrid.innerHTML = '';
+        availableSuggestions.slice(0, 4).forEach(product => {
+            suggestedGrid.innerHTML += `
+                <div class="suggested-item">
+                    <img src="${product.img}" alt="${product.title}">
+                    <h4>${product.title}</h4>
+                    <div class="price">₹${product.price.toLocaleString()}</div>
+                    <button class="add-suggested-btn" onclick="addToCart('${product.id}', '${product.title}', ${product.price}, '${product.img}')">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function updateSpecialOffers() {
+        const offersGrid = document.getElementById('offersGrid');
+        const cartTitles = cart.map(item => item.title);
+        
+        // Filter out products already in cart
+        const availableOffers = specialOffers.filter(offer => 
+            !cartTitles.includes(offer.title)
+        );
+
+        offersGrid.innerHTML = '';
+        availableOffers.forEach(offer => {
+            offersGrid.innerHTML += `
+                <div class="offer-product-card">
+                    <div class="offer-badge">${offer.discount}</div>
+                    <img src="${offer.img}" alt="${offer.title}">
+                    <div class="offer-product-title">${offer.title}</div>
+                    <div class="offer-product-desc">${offer.description}</div>
+                    <div class="offer-price-section">
+                        <span class="original-price">₹${offer.originalPrice.toLocaleString()}</span>
+                        <span class="offer-price">₹${offer.offerPrice.toLocaleString()}</span>
+                        <span class="offer-discount">${offer.discount}</span>
+                    </div>
+                    <button class="offer-add-btn" onclick="addToCart('${offer.id}', '${offer.title}', ${offer.offerPrice}, '${offer.img}')">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function addToCart(id, title, price, img) {
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+            existing.qty = (existing.qty || 1) + 1;
+        } else {
+            cart.push({id, title, price, img, qty: 1});
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+        
+        // Show success message
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = 'Added!';
+        btn.style.background = '#27ae60';
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+        }, 2000);
+    }
+
+        function removeFromCart(idx) {
+            cart.splice(idx, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+
+        document.getElementById('checkoutBtn').onclick = function() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+            } else {
+            const total = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+            let message = 'Proceeding to checkout...\n\n';
+            message += `Total Items: ${cart.length}\n`;
+            message += `Total Amount: ₹${total.toLocaleString()}\n\n`;
+            
+            if (total >= 100000) {
+                message += '🎧 Headphone offer applied!\n';
+            }
+            if (total >= 50000) {
+                message += '🚚 Free delivery applied!\n';
+            }
+            if (total >= 75000) {
+                message += '🛡️ Extended warranty applied!\n';
+            }
+            
+            alert(message);
+        }
+    };
+
+    // Initialize cart display
+        updateCartDisplay();
+    </script>
+{% endblock %}

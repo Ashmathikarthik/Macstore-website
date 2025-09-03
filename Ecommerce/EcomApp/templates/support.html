@@ -1,0 +1,869 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Support & Contact - MACESSENTIALSTORE{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #7691e8 0%, #377cb7 100%);
+        color: white;
+        padding: 4rem 2rem;
+        margin-top: 64px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        font-weight: 500;
+    }
+
+    .hero-image {
+        position: relative;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .floating-elements {
+        position: relative;
+        width: 300px;
+        height: 300px;
+    }
+
+    .float-element {
+        position: absolute;
+        font-size: 4rem;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .support-float { top: 20%; left: 10%; animation-delay: 0s; }
+    .contact-float { top: 60%; right: 10%; animation-delay: 1.5s; }
+    .help-float { bottom: 20%; left: 30%; animation-delay: 3s; }
+    .service-float { top: 10%; right: 30%; animation-delay: 4.5s; }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(5deg); }
+        66% { transform: translateY(-10px) rotate(-5deg); }
+    }
+
+    /* Main Container */
+    .support-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Section Titles */
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        margin-bottom: 3rem;
+    }
+
+    /* Support Cards */
+    .support-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .support-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e1e5e9;
+    }
+
+    .support-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .support-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #3498db;
+    }
+
+    .support-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .support-card p {
+        color: #7f8c8d;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    /* Contact Information */
+    .contact-info {
+        background: #f8f9fa;
+        padding: 3rem 2rem;
+        border-radius: 16px;
+        margin: 2rem 0;
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .contact-icon {
+        font-size: 2rem;
+        color: #3498db;
+        width: 50px;
+        text-align: center;
+    }
+
+    .contact-details h4 {
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .contact-details p {
+        color: #7f8c8d;
+        margin: 0;
+    }
+
+    /* Contact Form */
+    .contact-form {
+        background: white;
+        padding: 3rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin: 2rem 0;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+    }
+
+    /* Business Hours */
+    .business-hours {
+        background: #f8f9fa;
+        padding: 4rem 2rem;
+        margin: 3rem 0;
+        border-radius: 16px;
+    }
+
+    .hours-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .hour-item {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        border-left: 4px solid #3498db;
+    }
+
+    .hour-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .hour-item.holiday {
+        border-left-color: #e74c3c;
+    }
+
+    .day {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+
+    .time {
+        color: #3498db;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .hour-item.holiday .time {
+        color: #e74c3c;
+    }
+
+    /* Emergency Contact */
+    .emergency-contact {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .emergency-icon {
+        font-size: 4rem;
+        z-index: 2;
+        position: relative;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .emergency-content {
+        flex: 1;
+        z-index: 2;
+        position: relative;
+    }
+
+    .emergency-content h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .emergency-content p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .emergency-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #fff;
+    }
+
+    .emergency-content small {
+        opacity: 0.8;
+        font-size: 0.9rem;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        margin: 3rem 0;
+    }
+
+    .faq-item {
+        background: white;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .faq-question {
+        padding: 1.5rem;
+        background: #f8f9fa;
+        cursor: pointer;
+        font-weight: 600;
+        color: #2c3e50;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background: #e9ecef;
+    }
+
+    .faq-answer {
+        padding: 1.5rem;
+        color: #7f8c8d;
+        line-height: 1.6;
+        display: none;
+    }
+
+    .faq-answer.active {
+        display: block;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1rem;
+            min-height: 400px;
+        }
+
+        .hero-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .hero-stats {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+        }
+
+        .hero-image {
+            height: 250px;
+        }
+
+        .floating-elements {
+            width: 200px;
+            height: 200px;
+        }
+
+        .float-element {
+            font-size: 2.5rem;
+        }
+
+        .support-container {
+            padding: 1rem;
+        }
+        
+        .contact-form {
+            padding: 2rem;
+        }
+        
+        .support-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .business-hours {
+            padding: 2rem 1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .hours-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hour-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+
+        .emergency-contact {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .emergency-icon {
+            font-size: 3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Support & Contact</h1>
+        <p class="hero-subtitle">We're here to help you with any questions about our products, services, or your order. Get in touch with our expert team.</p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Support</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Satisfaction</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">Fast</span>
+                <span class="stat-label">Response</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-image">
+        <div class="floating-elements">
+            <div class="float-element support-float">📞</div>
+            <div class="float-element contact-float">💬</div>
+            <div class="float-element help-float">🔧</div>
+            <div class="float-element service-float">🎧</div>
+        </div>
+    </div>
+</div>
+
+<div class="support-container">
+    <!-- Quick Support Options -->
+    <div class="support-grid">
+        <div class="support-card">
+            <div class="support-icon">📞</div>
+            <h3>24/7 Customer Support</h3>
+            <p>Our dedicated support team is available round the clock to assist you with any queries, technical issues, or order-related questions.</p>
+            <p><strong>Call us:</strong> +91-1800-123-4567</p>
+        </div>
+        
+        <div class="support-card">
+            <div class="support-icon">💬</div>
+            <h3>Live Chat Support</h3>
+            <p>Get instant help through our live chat feature. Our representatives are trained to handle all Apple product-related queries efficiently.</p>
+            <p><strong>Available:</strong> 9 AM - 9 PM IST</p>
+        </div>
+        
+        <div class="support-card">
+            <div class="support-icon">📧</div>
+            <h3>Email Support</h3>
+            <p>Send us detailed queries via email and receive comprehensive responses within 24 hours. Perfect for complex technical issues.</p>
+            <p><strong>Email:</strong> support@macessentialstore.com</p>
+        </div>
+        
+        <div class="support-card">
+            <div class="support-icon">🔧</div>
+            <h3>Technical Support</h3>
+            <p>Expert assistance for device setup, troubleshooting, software issues, and Apple ecosystem integration. Our certified technicians are here to help.</p>
+            <p><strong>Specialized:</strong> Apple Certified</p>
+        </div>
+        
+        <div class="support-card">
+            <div class="support-icon">📦</div>
+            <h3>Order Tracking</h3>
+            <p>Track your order status, delivery updates, and manage your shipments. Get real-time notifications about your package location.</p>
+            <p><strong>Track:</strong> Via SMS/Email</p>
+        </div>
+        
+        <div class="support-card">
+            <div class="support-icon">🔄</div>
+            <h3>Returns & Refunds</h3>
+            <p>Easy 14-day return policy with no questions asked. Hassle-free refunds and exchanges for all products in original packaging.</p>
+            <p><strong>Policy:</strong> 14-Day Return</p>
+        </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="contact-info">
+        <h2 class="section-title">Contact Information</h2>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <div class="contact-icon">📞</div>
+                <div class="contact-details">
+                    <h4>Phone Support</h4>
+                    <p>+91-1800-123-4567<br>+91-98765-43210</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">📧</div>
+                <div class="contact-details">
+                    <h4>Email Support</h4>
+                    <p>support@macessentialstore.com<br>sales@macessentialstore.com</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">🏢</div>
+                <div class="contact-details">
+                    <h4>Office Address</h4>
+                    <p>123 Apple Street, Tech Park<br>Bangalore, Karnataka 560001</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">⏰</div>
+                <div class="contact-details">
+                    <h4>Business Hours</h4>
+                    <p>Monday - Saturday: 9 AM - 9 PM<br>Sunday: 10 AM - 6 PM</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">🌐</div>
+                <div class="contact-details">
+                    <h4>Website</h4>
+                    <p>www.macessentialstore.com<br>Online Support Portal</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">📱</div>
+                <div class="contact-details">
+                    <h4>WhatsApp Support</h4>
+                    <p>+91-98765-43210<br>Quick Response Guaranteed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form">
+        <h2 class="section-title">Send us a Message</h2>
+        <form id="contactForm" action="{% url 'contact_submit' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject *</label>
+                <select id="subject" name="subject" required>
+                    <option value="">Select a subject</option>
+                    <option value="order">Order Inquiry</option>
+                    <option value="technical">Technical Support</option>
+                    <option value="product">Product Information</option>
+                    <option value="return">Returns & Refunds</option>
+                    <option value="complaint">Complaint</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" rows="5" required placeholder="Please describe your issue or question in detail..."></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">Send Message</button>
+        </form>
+        <div id="formMessage" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 8px; text-align: center;"></div>
+    </div>
+
+    <!-- Business Hours Section -->
+    <div class="business-hours">
+        <h2 class="section-title">Business Hours</h2>
+        <p class="section-subtitle">We're here when you need us</p>
+        
+        <div class="hours-grid">
+            <div class="hour-item">
+                <span class="day">Monday - Friday</span>
+                <span class="time">9:00 AM - 9:00 PM</span>
+            </div>
+            <div class="hour-item">
+                <span class="day">Saturday</span>
+                <span class="time">9:00 AM - 9:00 PM</span>
+            </div>
+            <div class="hour-item">
+                <span class="day">Sunday</span>
+                <span class="time">10:00 AM - 6:00 PM</span>
+            </div>
+            <div class="hour-item holiday">
+                <span class="day">Public Holidays</span>
+                <span class="time">10:00 AM - 4:00 PM</span>
+            </div>
+        </div>
+        
+        <div class="emergency-contact">
+            <div class="emergency-icon">🚨</div>
+            <div class="emergency-content">
+                <h3>Emergency Support</h3>
+                <p>For urgent technical issues or critical support outside business hours</p>
+                <div class="emergency-number">+91-98765-43210</div>
+                <small>Available 24/7 • Immediate response guaranteed</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                How do I track my order?
+                <span>+</span>
+            </div>
+            <div class="faq-answer">
+                You can track your order by logging into your account and visiting the "My Orders" section. You'll also receive SMS and email updates with tracking information. For immediate assistance, call our support team.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                What is your return policy?
+                <span>+</span>
+            </div>
+            <div class="faq-answer">
+                We offer a 14-day return policy for all products in their original packaging and unused condition. Returns are free and we provide a full refund or exchange. Contact our support team to initiate a return.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                Do you provide warranty on products?
+                <span>+</span>
+            </div>
+            <div class="faq-answer">
+                Yes, all our products come with official Apple warranty. We also offer extended warranty options for additional protection. Warranty details are provided with each product and can be verified on Apple's website.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                How can I get technical support?
+                <span>+</span>
+            </div>
+            <div class="faq-answer">
+                Our Apple-certified technicians provide technical support via phone, live chat, and email. We can help with device setup, software issues, troubleshooting, and Apple ecosystem integration.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                What payment methods do you accept?
+                <span>+</span>
+            </div>
+            <div class="faq-answer">
+                We accept all major credit/debit cards, UPI, net banking, and EMI options. We also support digital wallets like Paytm, PhonePe, and Google Pay. All transactions are secure and encrypted.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                Do you offer EMI options?
+                <span>+</span>
+            </div>
+            <div class="faq-answer">
+                Yes, we offer EMI options on all products above ₹5,000. You can choose from 3, 6, 9, or 12-month EMI plans with 0% interest on select cards. EMI details are shown on the product page.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleFAQ(element) {
+        const answer = element.nextElementSibling;
+        const span = element.querySelector('span');
+        
+        if (answer.classList.contains('active')) {
+            answer.classList.remove('active');
+            span.textContent = '+';
+        } else {
+            // Close all other FAQ items
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.faq-question span').forEach(item => {
+                item.textContent = '+';
+            });
+            
+            // Open current FAQ item
+            answer.classList.add('active');
+            span.textContent = '-';
+        }
+    }
+
+    // Contact form submission
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const form = this;
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('formMessage');
+        
+        // Disable submit button and show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        
+        // Get form data
+        const formData = new FormData(form);
+        
+        // Send AJAX request
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Show message
+            messageDiv.style.display = 'block';
+            messageDiv.style.backgroundColor = data.success ? '#d4edda' : '#f8d7da';
+            messageDiv.style.color = data.success ? '#155724' : '#721c24';
+            messageDiv.style.border = data.success ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+            messageDiv.textContent = data.message;
+            
+            if (data.success) {
+                // Reset form on success
+                form.reset();
+            }
+        })
+        .catch(error => {
+            // Show error message
+            messageDiv.style.display = 'block';
+            messageDiv.style.backgroundColor = '#f8d7da';
+            messageDiv.style.color = '#721c24';
+            messageDiv.style.border = '1px solid #f5c6cb';
+            messageDiv.textContent = 'An error occurred. Please try again.';
+        })
+        .finally(() => {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Message';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        });
+    });
+</script>
+{% endblock %}
